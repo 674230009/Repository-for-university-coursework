@@ -1,0 +1,610 @@
+/* ==========================================================
+   1. ตัวแปรส่วนกลาง (CSS Variables) & Reset ค่าพื้นฐาน
+   ทำหน้าที่: กำหนดตัวแปรฟอนต์ สี เงา และล้างระยะขอบของ Browser
+   ========================================================== */
+:root {
+  --font-main: 'Prompt', -apple-system, sans-serif;
+  --bg-body: #f8fafc;        /* สีพื้นหลังเว็บ (สีเทาอ่อนสะอาดตา) */
+  --bg-card: #ffffff;        /* สีพื้นหลังการ์ดทั่วไป */
+  --text-dark: #0f172a;      /* สีตัวอักษรหลัก (สีเทาเข้มเกือบดำ) */
+  --text-muted: #64748b;     /* สีตัวอักษรรอง (สีเทากลาง) */
+  --border-subtle: #e2e8f0;  /* สีเส้นขอบบาง ๆ */
+  --primary: #4f46e5;        /* สีโทนหลัก (ม่วงคราม Indigo) */
+  --primary-hover: #4338ca;  /* สีปุ่มเมื่อเอาเมาส์ไปชี้ */
+  --shadow-card: 0 4px 20px -2px rgba(0, 0, 0, 0.05); /* เงานุ่มนวล */
+  --shadow-hover: 0 10px 25px -4px rgba(0, 0, 0, 0.1); /* เงาเมื่อชี้การ์ด */
+  --radius-lg: 16px;         /* ความโค้งมนของการ์ด */
+  --radius-md: 12px;         /* ความโค้งมนของปุ่มและอินพุต */
+}
+
+/* ล้าง Margin/Padding ทุกตัว และกำหนดให้ใช้ฟอนต์ Prompt */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: var(--font-main);
+}
+
+body {
+  background-color: var(--bg-body);
+  color: var(--text-dark);
+  min-height: 100vh;
+}
+
+/* ==========================================================
+   2. ส่วน Navbar แถบด้านบน
+   ทำหน้าที่: ตรึงอยู่บนสุด (Sticky) และจัดวางโลโก้ ค้นหา และปุ่มให้สมดุล
+   ========================================================== */
+.navbar {
+  background-color: #ffffff;
+  border-bottom: 1px solid var(--border-subtle);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+
+/* กล่องจำกัดความกว้างสูงสุด 1300px และจัดกึ่งกลางจอ */
+.nav-container {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+/* ไอคอนโลโก้พื้นหลังไล่เฉดสีส้มเหลือง */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-icon {
+  width: 42px;
+  height: 42px;
+  background: linear-gradient(135deg, #fef08a, #f59e0b);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  color: #78350f;
+  box-shadow: 0 4px 10px rgba(245, 158, 11, 0.2);
+}
+
+.logo-text h1 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: #1e293b;
+}
+
+.logo-text span {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* ช่องค้นหาโค้งมน พร้อมไอคอนแว่นขยาย */
+.search-box {
+  flex: 0 1 450px;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-box i {
+  position: absolute;
+  left: 16px;
+  color: #94a3b8;
+  font-size: 0.95rem;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 10px 16px 10px 42px;
+  background-color: #f1f5f9;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.search-box input:focus {
+  background-color: #ffffff;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+}
+
+/* ปุ่มกดสร้างโน๊ต ไล่เฉดสีม่วงคราม */
+.btn-create {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+  transition: all 0.2s;
+}
+
+.btn-create:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35);
+}
+
+/* ==========================================================
+   3. ส่วนจัดหน้าหลัก (Layout & Sidebar)
+   ========================================================== */
+.main-wrapper {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 28px 24px;
+  display: flex;
+  gap: 32px;
+}
+
+/* เมนูด้านข้าง กว้าง 250px */
+.sidebar {
+  width: 250px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.sidebar-group {
+  background-color: #ffffff;
+  padding: 16px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.group-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0 8px 8px;
+}
+
+.nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 14px;
+  border: none;
+  background: transparent;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s;
+}
+
+.nav-btn:hover {
+  background-color: #f1f5f9;
+  color: var(--text-dark);
+}
+
+.nav-btn.active {
+  background-color: #eef2ff;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/* จุดสีประจำแต่ละหมวดหมู่ */
+.dot-badge {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.cat-yellow { background-color: #eab308; }
+.cat-blue   { background-color: #3b82f6; }
+.cat-green  { background-color: #22c55e; }
+.cat-pink   { background-color: #ec4899; }
+.icon-all   { color: var(--primary); }
+
+/* พื้นที่การ์ดทางขวา */
+.content-panel {
+  flex: 1;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 24px;
+}
+
+.panel-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.panel-header p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.count-tag {
+  background-color: #e2e8f0;
+  color: #475569;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 999px;
+}
+
+/* ==========================================================
+   4. การ์ดโน๊ต 5 สี (Notes Grid & Cards)
+   ทำหน้าที่: แสดงการ์ดสไตล์กระดาษโพสต์อิท ตอบสนองทุกขนาดหน้าจอ
+   ========================================================== */
+.notes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 22px;
+}
+
+.note-card {
+  padding: 22px;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 190px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  transition: all 0.25s ease;
+  position: relative;
+}
+
+/* เมื่อเอาเมาส์ชี้การ์ดจะลอยขึ้นเล็กน้อย */
+.note-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover);
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+/* ป้ายชื่อหมวดหมู่บนการ์ดแบบโปร่งแสง */
+.card-pill {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background-color: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(4px);
+  color: #1e293b;
+  border: 1px solid rgba(0,0,0,0.04);
+}
+
+.btn-trash {
+  background: none;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  transition: all 0.15s;
+}
+
+.btn-trash:hover {
+  color: #ef4444;
+  background-color: rgba(255, 255, 255, 0.6);
+}
+
+.card-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 8px;
+  word-break: break-word;
+}
+
+.card-image-preview {
+  width: 100%;
+  max-height: 160px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.card-text {
+  font-size: 0.92rem;
+  color: #334155;
+  line-height: 1.6;
+  margin-bottom: 16px;
+  white-space: pre-line;
+}
+
+/* รายการสิ่งที่ต้องทำ และเส้นขีดฆ่าเมื่อทำเสร็จ */
+.card-todos {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.todo-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.92rem;
+}
+
+.todo-row input[type="checkbox"] {
+  width: 17px;
+  height: 17px;
+  cursor: pointer;
+  accent-color: #4f46e5;
+}
+
+.todo-row.done span {
+  text-decoration: line-through; /* ขีดฆ่าตัวหนังสือ */
+  color: #94a3b8;
+}
+
+.card-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.78rem;
+  color: #64748b;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  padding-top: 10px;
+  margin-top: auto;
+}
+
+/* หน้าต่างแสดงเมื่อยังไม่มีโน๊ต (Empty State ป้องกันจอขาวโล่ง) */
+.empty-state {
+  grid-column: 1 / -1;
+  background-color: #ffffff;
+  border: 2px dashed #cbd5e1;
+  border-radius: var(--radius-lg);
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.empty-icon {
+  width: 70px;
+  height: 70px;
+  background: #f1f5f9;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: #94a3b8;
+  margin-bottom: 16px;
+}
+
+.empty-state h3 {
+  font-size: 1.2rem;
+  color: #1e293b;
+  margin-bottom: 6px;
+}
+
+.empty-state p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin-bottom: 18px;
+}
+
+/* ==========================================================
+   5. หน้าต่าง Modal ป๊อปอัป (Glassmorphism)
+   ========================================================== */
+.modal-backdrop {
+  display: none;             /* ซ่อนไว้เป็นค่าเริ่มต้น */
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.5); /* พื้นหลังมืดโปร่งแสง */
+  backdrop-filter: blur(6px);              /* เบลอฉากหลังแบบกระจกฝ้า */
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+}
+
+.modal-backdrop.active {
+  display: flex; /* แสดงขึ้นมาเมื่อมีคลาส active */
+}
+
+.modal-card {
+  background-color: #ffffff;
+  width: 100%;
+  max-width: 500px;
+  border-radius: 20px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  padding: 26px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: modalIn 0.2s ease-out; /* แอนิเมชันตอนเปิด */
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.modal-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.modal-top h3 {
+  font-size: 1.2rem;
+  color: #1e293b;
+}
+
+.close-btn {
+  background: #f1f5f9;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  color: #64748b;
+  transition: all 0.15s;
+}
+
+.close-btn:hover {
+  background-color: #e2e8f0;
+  color: #0f172a;
+}
+
+/* แท็บสลับประเภทโน๊ต */
+.type-toggle {
+  display: flex;
+  background-color: #f1f5f9;
+  padding: 4px;
+  border-radius: 12px;
+  margin-bottom: 18px;
+}
+
+.toggle-btn {
+  flex: 1;
+  padding: 9px;
+  border: none;
+  background: none;
+  border-radius: 9px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.toggle-btn.active {
+  background-color: #ffffff;
+  color: var(--primary);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  font-weight: 600;
+}
+
+.form-item {
+  margin-bottom: 16px;
+}
+
+.form-item label {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #334155;
+  margin-bottom: 6px;
+}
+
+.required {
+  color: #ef4444;
+}
+
+.form-item input[type="text"],
+.form-item select,
+.form-item textarea,
+.form-item input[type="datetime-local"] {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border-subtle);
+  background-color: #f8fafc;
+  font-size: 0.95rem;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.form-item input[type="text"]:focus,
+.form-item select:focus,
+.form-item textarea:focus {
+  border-color: var(--primary);
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.file-input {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* วงกลมเลือกสี 5 สีพาสเทล */
+.color-picker-row {
+  display: flex;
+  gap: 14px;
+  padding: 6px 0;
+}
+
+.color-swatch {
+  cursor: pointer;
+}
+
+.color-swatch input {
+  display: none;
+}
+
+.swatch-circle {
+  display: block;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  transition: all 0.2s;
+}
+
+.color-swatch input:checked + .swatch-circle {
+  border-color: #0f172a;
+  transform: scale(1.15);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.btn-cancel {
+  padding: 9px 18px;
+  border-radius: 10px;
+  border: 1px solid var(--border-subtle);
+  background-color: #ffffff;
+  color: var(--text-dark);
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.btn-save {
+  padding: 9px 20px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  color: #ffffff;
+  cursor: pointer;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+}
