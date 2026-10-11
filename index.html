@@ -1,32 +1,23 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <!-- กำหนดการเข้ารหัสภาษาไทย และขนาดการแสดงผลบนหน้าจอมือถือ -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Smart Note & To-Do List</title>
   
-  <!-- ดึงฟอนต์ "Prompt" จาก Google Fonts เพื่อความทันสมัย อ่านง่าย -->
+  <!-- ฟอนต์ Prompt และไอคอน FontAwesome -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  
-  <!-- ดึงไอคอนสวย ๆ จาก FontAwesome CDN -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
-  <!-- เชื่อมต่อไฟล์สไตล์ CSS สำหรับตกแต่งหน้าตา -->
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
 
-  <!-- ========================================================
-       ส่วนที่ 1: แถบด้านบน (Navbar)
-       ทำหน้าที่: แสดงโลโก้, ช่องค้นหาแบบ Real-time, และปุ่มเปิด Modal สร้างโน๊ต
-       ======================================================== -->
+  <!-- แถบด้านบน (Navbar) -->
   <header class="navbar">
     <div class="nav-container">
-      
-      <!-- โลโก้แอปพลิเคชัน -->
       <div class="logo">
         <div class="logo-icon"><i class="fa-solid fa-note-sticky"></i></div>
         <div class="logo-text">
@@ -35,31 +26,25 @@
         </div>
       </div>
 
-      <!-- ช่องค้นหา (เมื่อผู้ใช้พิมพ์ ข้อความจะถูกส่งไปฟังก์ชัน setupSearch() ใน app.js) -->
+      <!-- ช่องค้นหา Real-time -->
       <div class="search-box">
         <i class="fa-solid fa-magnifying-glass"></i>
         <input type="text" id="searchInput" placeholder="ค้นหาบันทึก หรือสิ่งที่ต้องทำ...">
       </div>
 
-      <!-- ปุ่มสร้างโน๊ตใหม่ (กดแล้วจะเรียกฟังก์ชัน openModal() เพื่อเปิดหน้าต่างป๊อปอัป) -->
-      <button class="btn btn-create" onclick="openModal()">
+      <!-- ปุ่มสร้างโน๊ต -->
+      <button class="btn btn-create" onclick="openCreateModal()">
         <i class="fa-solid fa-plus"></i>
         <span>สร้างโน๊ตใหม่</span>
       </button>
-
     </div>
   </header>
 
-  <!-- ========================================================
-       ส่วนที่ 2: เนื้อหาหลัก (Main Layout)
-       จัดวางแบบ 2 คอลัมน์: ด้านซ้ายเป็น Sidebar / ด้านขวาเป็นการ์ดโน๊ต
-       ======================================================== -->
+  <!-- เนื้อหาหลัก (Layout สองฝั่ง) -->
   <div class="main-wrapper">
     
-    <!-- เมนูด้านข้าง (Sidebar) สำหรับกรองข้อมูล -->
+    <!-- เมนูด้านข้าง (Sidebar) -->
     <aside class="sidebar">
-      
-      <!-- กลุ่มที่ 1: กรองตามหมวดหมู่ (ส่ง ID 1-4 ไปที่ฟังก์ชัน filterCategory) -->
       <div class="sidebar-group">
         <span class="group-title">หมวดหมู่</span>
         <button class="nav-btn active" onclick="filterCategory('', this)">
@@ -79,7 +64,6 @@
         </button>
       </div>
 
-      <!-- กลุ่มที่ 2: กรองตามชนิดโน๊ต (ทั้งหมด, ข้อความ, หรือ To-Do) -->
       <div class="sidebar-group">
         <span class="group-title">รูปแบบโน๊ต</span>
         <button class="nav-btn" onclick="filterType('all', this)">
@@ -92,48 +76,37 @@
           <i class="fa-solid fa-list-check"></i> เช็คลิสต์ To-Do
         </button>
       </div>
-
     </aside>
 
-    <!-- พื้นที่แสดงการ์ดโน๊ต (Content Area) -->
+    <!-- พื้นที่แสดงการ์ดโน๊ต 5 สี -->
     <main class="content-panel">
-      
-      <!-- หัวข้อบอกสถานะการดู และตัวเลขนับจำนวนโน๊ต -->
       <div class="panel-header">
         <div>
           <h2 id="viewHeading">โน๊ตทั้งหมด</h2>
           <p id="viewSub">จัดการความคิดและงานของคุณได้ในที่เดียว</p>
         </div>
-        <!-- แท็กแสดงจำนวนรายการ เช่น "3 บันทึก" -->
         <span class="count-tag" id="noteCountTag">0 บันทึก</span>
       </div>
 
-      <!-- กล่อง Grid ว่างเปล่าสำหรับรอ JavaScript นำการ์ด 5 สีมาแสดงผล -->
-      <div id="notesGrid" class="notes-grid">
-        <!-- การ์ดโน๊ตจะถูกแทรกเข้ามาตรงนี้โดยอัตโนมัติ -->
-      </div>
-
+      <!-- กล่องวางการ์ด -->
+      <div id="notesGrid" class="notes-grid"></div>
     </main>
 
   </div>
 
-  <!-- ========================================================
-       ส่วนที่ 3: หน้าต่างป๊อปอัปเพิ่มโน๊ต (Modal Popup)
-       ค่าเริ่มต้นจะถูกซ่อนไว้ (display: none) จนกว่าจะกดปุ่มสร้างโน๊ต
-       ======================================================== -->
+  <!-- หน้าต่าง Modal (สำหรับทั้งสร้างใหม่ และ แก้ไข) -->
   <div id="noteModal" class="modal-backdrop">
     <div class="modal-card">
-      
-      <!-- ส่วนหัวของ Modal พร้อมปุ่มกากบาทปิดหน้าต่าง -->
       <div class="modal-top">
-        <h3><i class="fa-solid fa-pen-nib"></i> เขียนโน๊ตใหม่</h3>
+        <h3 id="modalHeading"><i class="fa-solid fa-pen-nib"></i> เขียนโน๊ตใหม่</h3>
         <button class="close-btn" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
       </div>
 
-      <!-- ฟอร์มรับข้อมูลโน๊ต (ส่งเข้าฟังก์ชัน saveNote ใน JavaScript เมื่อกด Submit) -->
       <form id="noteForm" onsubmit="saveNote(event)">
-        
-        <!-- สลับประเภทโน๊ตระหว่าง Text หรือ To-Do -->
+        <!-- ช่องเก็บ ID สำหรับเวลาแก้ไข -->
+        <input type="hidden" name="id" id="editNoteId" value="">
+
+        <!-- สลับประเภท Text / To-Do -->
         <div class="type-toggle">
           <button type="button" class="toggle-btn active" id="btnTypeText" onclick="selectType('text')">
             <i class="fa-regular fa-file-lines"></i> โน๊ตข้อความ
@@ -141,20 +114,17 @@
           <button type="button" class="toggle-btn" id="btnTypeTodo" onclick="selectType('todo')">
             <i class="fa-solid fa-list-check"></i> รายการสิ่งที่ต้องทำ (To-Do)
           </button>
-          <!-- input แบบ hidden เก็บค่าประเภทที่เลือก ('text' หรือ 'todo') -->
           <input type="hidden" name="type" id="noteType" value="text">
         </div>
 
-        <!-- ช่องกรอกหัวข้อโน๊ต (บังคับกรอก required) -->
         <div class="form-item">
           <label>หัวข้อโน๊ต <span class="required">*</span></label>
-          <input type="text" name="title" required placeholder="เช่น สรุปเนื้อหาสอบ, สิ่งที่ต้องทำวันนี้...">
+          <input type="text" name="title" id="noteTitleInput" required placeholder="เช่น สรุปเนื้อหาสอบ, สิ่งที่ต้องทำวันนี้...">
         </div>
 
-        <!-- ตัวเลือกหมวดหมู่ (Category ID 1-4) -->
         <div class="form-item">
           <label>หมวดหมู่</label>
-          <select name="category_id">
+          <select name="category_id" id="noteCatSelect">
             <option value="1">1: ทั่วไป (General)</option>
             <option value="2">2: การเรียน (Study)</option>
             <option value="3">3: งาน (Work)</option>
@@ -162,11 +132,11 @@
           </select>
         </div>
 
-        <!-- [กลุ่มฟิลด์เฉพาะโน๊ตข้อความ] มีเนื้อหา และปุ่มแนบรูปภาพ -->
+        <!-- กล่องสำหรับ Text Note -->
         <div id="textSection">
           <div class="form-item">
             <label>เนื้อหาบันทึก</label>
-            <textarea name="content" rows="4" placeholder="พิมพ์เนื้อหารายละเอียดโน๊ตของคุณที่นี่..."></textarea>
+            <textarea name="content" id="noteContentInput" rows="4" placeholder="พิมพ์เนื้อหารายละเอียดโน๊ตของคุณที่นี่..."></textarea>
           </div>
           <div class="form-item">
             <label>แนบรูปภาพ</label>
@@ -174,11 +144,11 @@
           </div>
         </div>
 
-        <!-- [กลุ่มฟิลด์เฉพาะโน๊ต To-Do] มีเวลาแจ้งเตือน และช่องกรอกข้อที่ต้องทำ -->
+        <!-- กล่องสำหรับ To-Do Note -->
         <div id="todoSection" style="display: none;">
           <div class="form-item">
             <label>วันและเวลาที่ต้องการแจ้งเตือน</label>
-            <input type="datetime-local" name="reminder_at">
+            <input type="datetime-local" name="reminder_at" id="noteReminderInput">
           </div>
           <div class="form-item">
             <label>รายการสิ่งที่ต้องทำ (คั่นแต่ละข้อด้วยเครื่องหมายจุลภาค ,)</label>
@@ -186,7 +156,7 @@
           </div>
         </div>
 
-        <!-- แถบเลือกสีการ์ด 5 สีพาสเทลตามข้อตกลง Data Contract -->
+        <!-- เลือกสีการ์ด 5 สีพาสเทล -->
         <div class="form-item">
           <label>เลือกสีการ์ดพาสเทล</label>
           <div class="color-picker-row">
@@ -213,17 +183,17 @@
           </div>
         </div>
 
-        <!-- ปุ่มกดปิด หรือ บันทึกข้อมูล -->
         <div class="modal-actions">
           <button type="button" class="btn-cancel" onclick="closeModal()">ยกเลิก</button>
-          <button type="submit" class="btn-save"><i class="fa-solid fa-check"></i> บันทึกโน๊ต</button>
+          <button type="submit" class="btn-save" id="btnSaveSubmit">
+            <i class="fa-solid fa-check"></i> บันทึกโน๊ต
+          </button>
         </div>
 
       </form>
     </div>
   </div>
 
-  <!-- นำเข้าไฟล์ JavaScript ควบคุมการทำงานทั้งหมด -->
   <script src="assets/js/app.js"></script>
 </body>
 </html>
